@@ -21,26 +21,44 @@ const connection = mysql.createConnection({
 const start = () => {
   inquirer
     .prompt({
-      name: "postOrBid",
+      name: "startHere",
       type: "list",
-      message: "Would you like to [POST] an auction or [BID] on an auction?",
-      choices: ["POST", "BID", "EXIT"],
+      message: "What would you like to do?",
+      choices: [
+        "View All Employees",
+        "View All Employees By Department",
+        "View All Employees By Manager",
+        "Add Employee",
+        "Remove Employee",
+        "Update Employee Role",
+        "Update Employee Manager",
+      ],
     })
     .then((answer) => {
-      // based on their answer, either call the bid or the post functions
-      if (answer.postOrBid === "POST") {
-        postAuction();
-      } else if (answer.postOrBid === "BID") {
-        bidAuction();
+      // based on their answer, call corresponding function
+      if (answer.startHere === "View All Employees") {
+        viewAll();
+      } else if (answer.startHere === "View All Employees By Department") {
+        viewAllDep();
+      } else if (answer.startHere === "View All Employees By Manager") {
+        viewAllMan();
+      } else if (answer.startHere === "Add Employee") {
+        addEmp();
+      } else if (answer.startHere === "Remove Employee") {
+        remEmp();
+      } else if (answer.startHere === "Update Employee Role") {
+        updEmpRole();
+      } else if (answer.startHere === "Update Employee Manager") {
+        updEmpMan();
       } else {
         connection.end();
       }
     });
 };
 
-// function to handle posting new items up for auction
-const postAuction = () => {
-  // prompt for info about the item being put up for auction
+// Function to view all employees
+const viewAll = () => {
+  // DO NOT THINK I'LL NEED PROMPT FOR THIS ONE? JUST THEN AND SHOW DATA?
   inquirer
     .prompt([
       {
@@ -86,7 +104,71 @@ const postAuction = () => {
     });
 };
 
-const bidAuction = () => {
+// Function to add a new employee
+const addEmp = () => {
+  // query the database for all items being auctioned
+  connection.query("SELECT * FROM auctions", (err, results) => {
+    if (err) throw err;
+    // once you have the items, prompt the user for which they'd like to bid on
+    inquirer
+      .prompt([
+        {
+          name: "choice",
+          type: "rawlist",
+          choices() {
+            const choiceArray = [];
+            results.forEach(({ item_name }) => {
+              choiceArray.push(item_name);
+            });
+            return choiceArray;
+          },
+          message: "What auction would you like to place a bid in?",
+        },
+        {
+          name: "bid",
+          type: "input",
+          message: "How much would you like to bid?",
+        },
+      ])
+      .then((answer) => {
+        // get the information of the chosen item
+        let chosenItem;
+        results.forEach((item) => {
+          if (item.item_name === answer.choice) {
+            chosenItem = item;
+          }
+        });
+
+        // determine if bid was high enough
+        if (chosenItem.highest_bid < parseInt(answer.bid)) {
+          // bid was high enough, so update db, let the user know, and start over
+          connection.query(
+            "UPDATE auctions SET ? WHERE ?",
+            [
+              {
+                highest_bid: answer.bid,
+              },
+              {
+                id: chosenItem.id,
+              },
+            ],
+            (error) => {
+              if (error) throw err;
+              console.log("Bid placed successfully!");
+              start();
+            }
+          );
+        } else {
+          // bid wasn't high enough, so apologize and start over
+          console.log("Your bid was too low. Try again...");
+          start();
+        }
+      });
+  });
+};
+
+// Function to update an employee role
+const updEmpRole = () => {
   // query the database for all items being auctioned
   connection.query("SELECT * FROM auctions", (err, results) => {
     if (err) throw err;
@@ -151,6 +233,6 @@ const bidAuction = () => {
 // Connects to the mysql server and database
 connection.connect((err) => {
   if (err) throw err;
-  // run the start function after the connection is made to prompt the user
+  // Run the start function after the connection is made to prompt the user
   start();
 });
