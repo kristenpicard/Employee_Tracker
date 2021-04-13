@@ -32,6 +32,7 @@ const start = () => {
         "Remove Employee",
         "Update Employee Role",
         "Update Employee Manager",
+        "Exit",
       ],
     })
     .then((answer) => {
@@ -58,50 +59,23 @@ const start = () => {
 
 // Function to view all employees
 const viewAll = () => {
-  // DO NOT THINK I'LL NEED PROMPT FOR THIS ONE? JUST THEN AND SHOW DATA?
-  inquirer
-    .prompt([
-      {
-        name: "item",
-        type: "input",
-        message: "What is the item you would like to submit?",
-      },
-      {
-        name: "category",
-        type: "input",
-        message: "What category would you like to place your auction in?",
-      },
-      {
-        name: "startingBid",
-        type: "input",
-        message: "What would you like your starting bid to be?",
-        validate(value) {
-          if (isNaN(value) === false) {
-            return true;
-          }
-          return false;
-        },
-      },
-    ])
-    .then((answer) => {
-      // when finished prompting, insert a new item into the db with that info
-      connection.query(
-        "INSERT INTO auctions SET ?",
-        // QUESTION: What does the || 0 do?
-        {
-          item_name: answer.item,
-          category: answer.category,
-          starting_bid: answer.startingBid || 0,
-          highest_bid: answer.startingBid || 0,
-        },
-        (err) => {
-          if (err) throw err;
-          console.log("Your auction was created successfully!");
-          // re-prompt the user for if they want to bid or post
-          start();
-        }
-      );
-    });
+  // FIGURE OUT HOW TO SHOW EMPLOYEE DATA
+  connection.query(
+    "INSERT INTO auctions SET ?",
+    // QUESTION: What does the || 0 do?
+    {
+      item_name: answer.item,
+      category: answer.category,
+      starting_bid: answer.startingBid || 0,
+      highest_bid: answer.startingBid || 0,
+    },
+    (err) => {
+      if (err) throw err;
+      console.log("Your auction was created successfully!");
+      // re-prompt the user for if they want to bid or post
+      start();
+    }
+  );
 };
 
 // Function to add a new employee
