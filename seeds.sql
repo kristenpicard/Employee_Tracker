@@ -1,7 +1,15 @@
 USE cms_DB;
 
 INSERT INTO employee (first_name, last_name, role_id)
--- VALUES ("vanilla", 2.50, 100), ("chocolate", 3.10, 120), ("strawberry", 3.25, 75);
+VALUES 
+("John", "Doe", 1), 
+("Mike", "Chan", 2), 
+("Ashley", "Rodriguez", 3), 
+("Kevin", "Tupik", 4), 
+("Malia", "Brown", 5), 
+("Sarah", "Lourd", 6), 
+("Tom", "Allen", 7), 
+("Christian", "Eckenrode", 3);
 
 INSERT INTO role (title, salary, department_id)
 VALUES ("Sales Lead", 100000, 1), ("Salesperson", 80000, 1), 

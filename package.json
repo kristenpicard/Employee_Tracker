@@ -19,7 +19,9 @@
   "homepage": "https://github.com/kristenpicard/Employee_Tracker#readme",
   "dependencies": {
     "console.table": "^0.10.0",
+    "dotenv": "^8.2.0",
     "inquirer": "^8.0.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "sequelize": "^6.6.2"
   }
 }
