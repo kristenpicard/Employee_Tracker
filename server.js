@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const consoleTable = require("console.table");
+// const consoleTable = require("console.table");
 
 // create the connection information for the sql database
 const connection = mysql.createConnection({
@@ -60,8 +60,9 @@ const start = () => {
 // Function to view all employees
 const viewAll = () => {
   // FIGURE OUT HOW TO SHOW EMPLOYEE DATA
-  connection.query("SELECT * FROM employee", (err) => {
+  connection.query("SELECT * FROM employee", (err, results) => {
     if (err) throw err;
+    console.table(results);
     console.log("Success!");
     // re-prompt the user for what they want to do next
     // start();
