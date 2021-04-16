@@ -1,18 +1,12 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-// const consoleTable = require("console.table");
+const consoleTable = require("console.table");
 
 // create the connection information for the sql database
 const connection = mysql.createConnection({
   host: "localhost",
-
-  // Your port; if not 3306
   port: 3306,
-
-  // Your username
   user: "root",
-
-  // Your password
   password: "",
   database: "cms_DB",
 });
@@ -59,14 +53,16 @@ const start = () => {
 
 // Function to view all employees
 const viewAll = () => {
-  // FIGURE OUT HOW TO SHOW EMPLOYEE DATA
-  connection.query("SELECT * FROM employee", (err, results) => {
-    if (err) throw err;
-    console.table(results);
-    console.log("Success!");
-    // re-prompt the user for what they want to do next
-    // start();
-  });
+  connection.query(
+    "SELECT employee.id, first_name, last_name, title, salary, name, manager_id FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id",
+    (err, results) => {
+      if (err) throw err;
+      console.table(results);
+      console.log("Success!");
+      // re-prompt the user for what they want to do next
+      start();
+    }
+  );
 };
 
 // Function to add a new employee
