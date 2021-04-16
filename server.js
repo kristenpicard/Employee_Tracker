@@ -20,8 +20,8 @@ const start = () => {
       message: "What would you like to do?",
       choices: [
         "View All Employees",
-        "View All Employees By Department",
-        "View All Employees By Manager",
+        "View All Departments",
+        "View All Roles",
         "Add Employee",
         "Remove Employee",
         "Update Employee Role",
@@ -33,10 +33,10 @@ const start = () => {
       // based on their answer, call corresponding function
       if (answer.startHere === "View All Employees") {
         viewAll();
-      } else if (answer.startHere === "View All Employees By Department") {
+      } else if (answer.startHere === "View All Departments") {
         viewAllDep();
-      } else if (answer.startHere === "View All Employees By Manager") {
-        viewAllMan();
+      } else if (answer.startHere === "View All Roles") {
+        viewAllRoles();
       } else if (answer.startHere === "Add Employee") {
         addEmp();
       } else if (answer.startHere === "Remove Employee") {
@@ -58,7 +58,32 @@ const viewAll = () => {
     (err, results) => {
       if (err) throw err;
       console.table(results);
-      console.log("Success!");
+      // re-prompt the user for what they want to do next
+      start();
+    }
+  );
+};
+
+// Function to view all departments
+const viewAllDep = () => {
+  connection.query(
+    "SELECT id, NAME AS department FROM department",
+    (err, results) => {
+      if (err) throw err;
+      console.table(results);
+      // re-prompt the user for what they want to do next
+      start();
+    }
+  );
+};
+
+// Function to view all roles
+const viewAllRoles = () => {
+  connection.query(
+    "SELECT role.id, title AS role, salary, NAME AS department FROM role JOIN department ON role.department_id = department.id ORDER BY title",
+    (err, results) => {
+      if (err) throw err;
+      console.table(results);
       // re-prompt the user for what they want to do next
       start();
     }
