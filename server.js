@@ -90,6 +90,50 @@ const viewAllRoles = () => {
   );
 };
 
+const addEmp = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "What is the new employee's first name?",
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "What is the new employee's last name?",
+      },
+      {
+        type: "list",
+        name: "role",
+        message: "What is the new employee's role?",
+        // Need choices but do not know how to grab id from role?
+        // choices() {
+        //   const choiceArray = [];
+        //   results.forEach(({ item_name }) => {
+        //     choiceArray.push(item_name);
+        //   });
+        //   return choiceArray;
+        // },
+      },
+    ])
+    .then((data) => {
+      connection.query(
+        "INSERT INTO employee SET ?",
+        {
+          first_name: data.firstName,
+          last_name: data.lastName,
+          // role_id: ??
+        },
+        function (err) {
+          if (err) throw err;
+        }
+      );
+      console.log("Updated Employee List:");
+      viewAll();
+    });
+};
+
 const addDep = () => {
   inquirer
     .prompt([
