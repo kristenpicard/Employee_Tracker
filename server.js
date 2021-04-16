@@ -23,9 +23,9 @@ const start = () => {
         "View All Departments",
         "View All Roles",
         "Add Employee",
-        "Remove Employee",
+        "Add Department",
+        "Add Role",
         "Update Employee Role",
-        "Update Employee Manager",
         "Exit",
       ],
     })
@@ -39,12 +39,12 @@ const start = () => {
         viewAllRoles();
       } else if (answer.startHere === "Add Employee") {
         addEmp();
-      } else if (answer.startHere === "Remove Employee") {
-        remEmp();
+      } else if (answer.startHere === "Add Department") {
+        addDep();
+      } else if (answer.startHere === "Add Role") {
+        addRole();
       } else if (answer.startHere === "Update Employee Role") {
         updEmpRole();
-      } else if (answer.startHere === "Update Employee Manager") {
-        updEmpMan();
       } else {
         connection.end();
       }
@@ -89,6 +89,30 @@ const viewAllRoles = () => {
     }
   );
 };
+
+function addDep() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "newDepartment",
+        message: "What is the name of the new department?",
+      },
+    ])
+    .then((data) => {
+      connection.query(
+        "INSERT INTO department SET ?",
+        {
+          name: data.newDepartment,
+        },
+        function (err) {
+          if (err) throw err;
+        }
+      );
+      console.log("Updated Departments Table:");
+      viewAllDep();
+    });
+}
 
 // Function to add a new employee
 // const addEmp = () => {
