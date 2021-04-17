@@ -7,7 +7,7 @@ const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
-  password: "",
+  password: "Ir4avsw(oN)",
   database: "cms_DB",
 });
 
@@ -91,47 +91,54 @@ const viewAllRoles = () => {
 };
 
 const addEmp = () => {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        name: "firstName",
-        message: "What is the new employee's first name?",
-      },
-      {
-        type: "input",
-        name: "lastName",
-        message: "What is the new employee's last name?",
-      },
-      {
-        type: "list",
-        name: "role",
-        message: "What is the new employee's role?",
-        // Need choices but do not know how to grab id from role?
-        // choices() {
-        //   const choiceArray = [];
-        //   results.forEach(({ item_name }) => {
-        //     choiceArray.push(item_name);
-        //   });
-        //   return choiceArray;
-        // },
-      },
-    ])
-    .then((data) => {
-      connection.query(
-        "INSERT INTO employee SET ?",
+  connection.query(
+    "SELECT * FROM employee",
+    (err, results) => {
+      if (err) throw err;
+      console.log(results);
+    },
+    inquirer
+      .prompt([
         {
-          first_name: data.firstName,
-          last_name: data.lastName,
-          // role_id: ??
+          type: "input",
+          name: "firstName",
+          message: "What is the new employee's first name?",
         },
-        function (err) {
-          if (err) throw err;
-        }
-      );
-      console.log("Updated Employee List:");
-      viewAll();
-    });
+        {
+          type: "input",
+          name: "lastName",
+          message: "What is the new employee's last name?",
+        },
+        {
+          type: "list",
+          name: "role",
+          message: "What is the new employee's role?",
+          // Need choices but do not know how to grab id from role?
+          // choices() {
+          //   const choiceArray = [];
+          //   results.forEach(({ item_name }) => {
+          //     choiceArray.push(item_name);
+          //   });
+          //   return choiceArray;
+          // },
+        },
+      ])
+      .then((data) => {
+        connection.query(
+          "INSERT INTO employee SET ?",
+          {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            // role_id: ??
+          },
+          function (err) {
+            if (err) throw err;
+          }
+        );
+        console.log("Updated Employee List:");
+        viewAll();
+      })
+  );
 };
 
 const addDep = () => {
