@@ -92,10 +92,9 @@ const viewAllRoles = () => {
 
 const addEmp = () => {
   connection.query(
-    "SELECT * FROM employee",
+    "SELECT * FROM role",
     (err, results) => {
       if (err) throw err;
-      console.log(results);
     },
     inquirer
       .prompt([
@@ -113,30 +112,41 @@ const addEmp = () => {
           type: "list",
           name: "role",
           message: "What is the new employee's role?",
-          // Need choices but do not know how to grab id from role?
-          // choices() {
-          //   const choiceArray = [];
-          //   results.forEach(({ item_name }) => {
-          //     choiceArray.push(item_name);
-          //   });
-          //   return choiceArray;
-          // },
+          choices() {
+            const choiceArray = [];
+            [...results].forEach((role) => {
+              choiceArray.push(role.title);
+            });
+            return choiceArray;
+          },
         },
       ])
       .then((data) => {
+        let roleID = data.role;
         connection.query(
-          "INSERT INTO employee SET ?",
-          {
-            first_name: data.firstName,
-            last_name: data.lastName,
-            // role_id: ??
-          },
-          function (err) {
+          `SELECT id FROM role WHERE title = '${data.role}'`,
+          (err, res) => {
             if (err) throw err;
+            roleID = res[0].id;
+            try {
+              connection.query(
+                "INSERT INTO employee SET ?",
+                {
+                  first_name: answer.firstName,
+                  last_name: answer.lastName,
+                  role_id: roleID,
+                },
+                (err) => {
+                  if (err) throw err;
+                }
+              );
+            } catch (err) {
+              console.log(err);
+            }
+            console.log("Updated Employee List:");
+            viewAll();
           }
         );
-        console.log("Updated Employee List:");
-        viewAll();
       })
   );
 };
