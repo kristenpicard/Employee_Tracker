@@ -91,11 +91,14 @@ const viewAllRoles = () => {
 };
 
 const addEmp = () => {
-  connection.query(
-    "SELECT * FROM role",
-    (err, results) => {
-      if (err) throw err;
-    },
+  connection.query("SELECT * FROM role", (err, roles) => {
+    if (err) console.log(err);
+    roles = roles.map((role) => {
+      return {
+        name: role.title,
+        value: role.id,
+      };
+    });
     inquirer
       .prompt([
         {
@@ -112,43 +115,26 @@ const addEmp = () => {
           type: "list",
           name: "role",
           message: "What is the new employee's role?",
-          choices() {
-            const choiceArray = [];
-            [...results].forEach((role) => {
-              choiceArray.push(role.title);
-            });
-            return choiceArray;
-          },
+          choices: roles,
         },
       ])
       .then((data) => {
-        let roleID = data.role;
+        console.log(data.role);
         connection.query(
-          `SELECT id FROM role WHERE title = '${data.role}'`,
-          (err, res) => {
+          "INSERT INTO employee SET ?",
+          {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            role_id: data.role,
+          },
+          (err) => {
             if (err) throw err;
-            roleID = res[0].id;
-            try {
-              connection.query(
-                "INSERT INTO employee SET ?",
-                {
-                  first_name: answer.firstName,
-                  last_name: answer.lastName,
-                  role_id: roleID,
-                },
-                (err) => {
-                  if (err) throw err;
-                }
-              );
-            } catch (err) {
-              console.log(err);
-            }
             console.log("Updated Employee List:");
             viewAll();
           }
         );
-      })
-  );
+      });
+  });
 };
 
 const addDep = () => {
