@@ -208,34 +208,40 @@ const addRole = () => {
 };
 
 const updEmpRole = () => {
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "chooseEmployee",
-        message: "Which employee would you like to update?",
-        // Need choices but do not know how to grab id from role?
-        // choices() {
-        //   Need to add control flow to show all employees?
-        // },
-      },
-    ])
-    .then((data) => {
-      // I think need nested .then to update role from that employee?
-      // connection.query(
-      //   "INSERT INTO employee SET ?",
-      //   {
-      //     first_name: data.firstName,
-      //     last_name: data.lastName,
-      //     // role_id: ??
-      //   },
-      //   function (err) {
-      //     if (err) throw err;
-      //   }
-      // );
-      console.log("Updated Employee List:");
-      viewAll();
+  connection.query("SELECT * FROM employee", (err, employees) => {
+    if (err) console.log(err);
+    employees = employees.map((employee) => {
+      return {
+        name: employee.name,
+        value: employee.id,
+      };
     });
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "chooseEmployee",
+          message: "Which employee would you like to update?",
+          choices: employees,
+        },
+      ])
+      .then((data) => {
+        // I think need nested .then to update role from that employee?
+        // connection.query(
+        //   "INSERT INTO employee SET ?",
+        //   {
+        //     first_name: data.firstName,
+        //     last_name: data.lastName,
+        //     // role_id: ??
+        //   },
+        //   function (err) {
+        //     if (err) throw err;
+        //   }
+        // );
+        console.log("Updated Employee List:");
+        viewAll();
+      });
+  });
 };
 
 // Connects to the mysql server and database
