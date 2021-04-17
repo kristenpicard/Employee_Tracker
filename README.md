@@ -29,9 +29,9 @@ https://github.com/kristenpicard
 
 ## Tests
 
-Click this link to view a video that demonstrates the application functionality: KRISTEN LINK HERE
+![Demo:](/img/1.gif)
 
-HERE IS A GIF OF THE VIDEO
+[Click this link to view a video that demonstrates the application functionality](https://drive.google.com/file/d/1A5T_zZhgnOfN1vLi5HZgVVCoTgHOnL--/view)
 
 ## Questions
 
