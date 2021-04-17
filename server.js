@@ -212,10 +212,19 @@ const updEmpRole = () => {
     if (err) console.log(err);
     employees = employees.map((employee) => {
       return {
-        name: employee.name,
+        name: `${employee.first_name} ${employee.last_name}`,
         value: employee.id,
       };
     });
+
+    // connection.query("SELECT * FROM department", (err, departments) => {
+    //   if (err) console.log(err);
+    //   departments = departments.map((department) => {
+    //     return {
+    //       name: department.name,
+    //       value: department.id,
+    //     };
+
     inquirer
       .prompt([
         {
@@ -226,18 +235,18 @@ const updEmpRole = () => {
         },
       ])
       .then((data) => {
-        // I think need nested .then to update role from that employee?
-        // connection.query(
-        //   "INSERT INTO employee SET ?",
-        //   {
-        //     first_name: data.firstName,
-        //     last_name: data.lastName,
-        //     // role_id: ??
-        //   },
-        //   function (err) {
-        //     if (err) throw err;
-        //   }
-        // );
+        connection.query(
+          "UPDATE employee SET ? WHERE ?",
+          {
+            role_id: data.chooseEmployee,
+          },
+          {
+            id: data.employees,
+          },
+          function (err) {
+            if (err) throw err;
+          }
+        );
         console.log("Updated Employee List:");
         viewAll();
       });
