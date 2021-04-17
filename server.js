@@ -162,40 +162,49 @@ const addDep = () => {
 };
 
 const addRole = () => {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        name: "newRole",
-        message: "What is the title of the new role?",
-      },
-      {
-        type: "input",
-        name: "newSalary",
-        message: "How much is the salary for the new role?",
-      },
-      {
-        type: "input",
-        name: "depID",
-        message:
-          "What department ID belongs to the new role (1=Sales, 2=Engineering, 3=Finance, 4=Legal)?",
-      },
-    ])
-    .then((data) => {
-      connection.query(
-        "INSERT INTO role SET ?",
-        {
-          title: data.newRole,
-          salary: data.newSalary,
-          department_id: data.depID,
-        },
-        function (err) {
-          if (err) throw err;
-        }
-      );
-      console.log("Updated Roles Table:");
-      viewAllRoles();
+  connection.query("SELECT * FROM department", (err, departments) => {
+    if (err) console.log(err);
+    departments = departments.map((department) => {
+      return {
+        name: department.name,
+        value: department.id,
+      };
     });
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "newRole",
+          message: "What is the title of the new role?",
+        },
+        {
+          type: "input",
+          name: "newSalary",
+          message: "How much is the salary for the new role?",
+        },
+        {
+          type: "list",
+          name: "depID",
+          message: "What department is this role in?",
+          choices: departments,
+        },
+      ])
+      .then((data) => {
+        connection.query(
+          "INSERT INTO role SET ?",
+          {
+            title: data.newRole,
+            salary: data.newSalary,
+            department_id: data.depID,
+          },
+          function (err) {
+            if (err) throw err;
+          }
+        );
+        console.log("Updated Roles Table:");
+        viewAllRoles();
+      });
+  });
 };
 
 const updEmpRole = () => {
