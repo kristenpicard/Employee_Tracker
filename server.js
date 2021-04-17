@@ -216,40 +216,49 @@ const updEmpRole = () => {
         value: employee.id,
       };
     });
-
-    // connection.query("SELECT * FROM department", (err, departments) => {
-    //   if (err) console.log(err);
-    //   departments = departments.map((department) => {
-    //     return {
-    //       name: department.name,
-    //       value: department.id,
-    //     };
-
-    inquirer
-      .prompt([
-        {
-          type: "list",
-          name: "chooseEmployee",
-          message: "Which employee would you like to update?",
-          choices: employees,
-        },
-      ])
-      .then((data) => {
-        connection.query(
-          "UPDATE employee SET ? WHERE ?",
-          {
-            role_id: data.chooseEmployee,
-          },
-          {
-            id: data.employees,
-          },
-          function (err) {
-            if (err) throw err;
-          }
-        );
-        console.log("Updated Employee List:");
-        viewAll();
+    connection.query("SELECT * FROM role", (err, roles) => {
+      if (err) console.log(err);
+      roles = roles.map((role) => {
+        return {
+          name: role.title,
+          value: role.id,
+        };
       });
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "chooseEmployee",
+            message: "Which employee would you like to update?",
+            choices: employees,
+          },
+
+          {
+            type: "list",
+            name: "chooseNewRole",
+            message: "Which should this employee's role be updated to?",
+            choices: roles,
+          },
+        ])
+        .then((data) => {
+          connection.query(
+            "UPDATE employee SET ? WHERE ?",
+            [
+              {
+                role_id: data.chooseNewRole,
+              },
+              {
+                id: data.chooseEmployee,
+              },
+            ],
+            function (err) {
+              if (err) throw err;
+            }
+          );
+          console.log("Updated Employee List:");
+          viewAll();
+        });
+    });
   });
 };
 
