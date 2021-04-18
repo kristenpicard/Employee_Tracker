@@ -4,6 +4,16 @@
 
 This is a command-line application that uses MySQL to keep track of and make changes to a company database.
 
+Functionality:
+
+- View all employees
+- View all Departments
+- View all Roles
+- Add a new Employee
+- Add a new Department
+- Add a new Rold
+- Update the role of an existing Employee
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -15,6 +25,8 @@ This is a command-line application that uses MySQL to keep track of and make cha
 ## Installation
 
 Clone the repository at https://github.com/kristenpicard/Employee_Tracker and load it on code editor of your choice. Vscode is the prefered editor.
+
+In the command line, the user can invoke the application with "npm start".
 
 ## License
 
